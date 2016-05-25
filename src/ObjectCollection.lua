@@ -31,6 +31,7 @@ function ObjectCollection:prepareButtons(images,target)
     --print(q, self.nRow, self.nCol)
     local b = Button.new(5+(q%self.nCol)*ew,5+math.floor((q+self.q*(#self.pages-1))/self.nCol)*eh,ew-10,eh-10)
     b.image = v
+    b.id = i
     b.borderColor = {150,150,150}
     b.borderWidth = 2
     b:addTarget(function (button)

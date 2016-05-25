@@ -4,10 +4,12 @@ local ImgView = require 'src/TileImageView'
 
 local drawGrid,updateSelection,unselect,endSelection
 local showGrid, hideGrid, scrollGrid
+local checkCornerScroll
 
 local LevelCanvas = ui.extends(View,'LevelCanvas')
 
 local img = nil
+local id = nil
 local moveTime = 0.8
 
 local color = {
@@ -47,7 +49,8 @@ function LevelCanvas.new(x,y,width,height)
 	return self
 end
 
-function LevelCanvas:selectTile(img2)
+function LevelCanvas:selectTile(id2,img2)
+	id = id2
 	img = img2
 end
 
@@ -60,7 +63,6 @@ end
 function LevelCanvas:during_draw()
 	self.super:during_draw()
 	if self.mouse_over then
-		print(self.lastX,self.width)
 		local x,y = self.contentView:convertPoint(self.lastX,self.lastY)
 		love.graphics.setColor(0,0,0)
 		local px,py = self.lastX,self.lastY
@@ -121,8 +123,11 @@ function LevelCanvas:mousereleased(x,y,b)
 	x,y = self.contentView:convertPoint(x,y)
 	if self.selection then
 		--do something
-		for _,v in pairs(self.selection.selected) do
-			v.image = img
+		if img~=nil then
+			for _,v in pairs(self.selection.selected) do
+				v.image = img
+				v.id = id
+			end
 		end
 		endSelection(self)
 	end
@@ -130,6 +135,10 @@ end
 
 function LevelCanvas:update(dt)
 	self.super:update(dt)
+	checkCornerScroll(self,dt)
+end
+
+function checkCornerScroll(self,dt)
 	if self.mouse_over then
 		local dx = self.width-self.lastX
 		local dy = self.height-self.lastY
@@ -163,13 +172,50 @@ function LevelCanvas:wheelmoved(x,y)
 	scrollGrid(self,5*x,-5*y)
 end
 
+function LevelCanvas:exportLevelData()
+	local t = {
+		cellSize = self.cell_size,
+		worldSize = {
+			width = self.contentView.width,
+			height = self.contentView.height
+		},
+		cellsQuant = {
+			n_lines = 3,
+			n_cols = 4
+		},
+		layers = {
+			{
+				name = 'default',
+				objects = {
+
+				}
+			}
+		}
+	}
+	for _,v in pairs(self.grid) do for _,w in pairs(v) do if w.image~=nil then
+		table.insert(t.layers[1].objects,{
+			name=w.id,
+			position= { x=w.x, y=w.y },
+			size= { width=w.width, height=w.height }
+		})
+	end end end
+	return t
+end
+
 function LevelCanvas:keypressed(key)
 	if key=='escape' then
 		if self.selection then
 			endSelection(self)
+		else
+			img = nil
 		end
 	elseif key=='g' then
 		self:toggleGrid()
+	--[[TO DO
+	elseif key=='right' then
+		scrollGrid(self,self.cell_size/2,0)
+	elseif key=='left' then
+	]]
 	end
 end
 
@@ -206,7 +252,6 @@ function updateSelection(self)
 	local view
 	for i=math.floor(b.x/self.cell_size),math.floor((b.x+b.width)/self.cell_size) do
 		for j=math.floor(b.y/self.cell_size),math.floor((b.y+b.height)/self.cell_size) do
-			print(i,j)
 			view = self.grid[j][i]
 			view.overlayImg = img
 			view.borderColor = {255,0,0}

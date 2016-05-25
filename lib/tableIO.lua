@@ -18,7 +18,7 @@ end
 
 local prints = {
 	number = write,
-	string = write,
+	string = function(string,file) write("'"..string .."'",file) end,
 	table = function(t,file,offset)
 		writeTable(t,file,offset..'\t')
 	end
@@ -30,6 +30,7 @@ function writeTable(t,file,offset)
 	local off = offset..'\t'
 	local first = true
 	for i,v in pairs(t) do
+		--print(i,v)
 		local f = prints[type(v)]
 		if f then
 			if first then first = false
@@ -70,6 +71,7 @@ function tableIO.save(t,path,name)
 	file:write('local '..name..' = ')
 	writeTable(t,file)
 	file:write('\n\nreturn '..name)
+	io.close(file)
 	return true
 end
 

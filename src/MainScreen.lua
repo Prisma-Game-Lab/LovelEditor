@@ -10,14 +10,15 @@ local inst
 function MainScreen.new()
 	local self = MainScreen.newObject()
 
-	self.levelCanvas = (require 'src/LevelCanvas').new(0,50,640,480)
+	self.levelCanvas = (require 'src/LevelCanvas').new(0,50,1100,570)
 	self.view:addSubView(self.levelCanvas)
+	--self.levelCanvas.delegate = self
 
-	self.toolUpperArea = View.new(0,0,640,50)
+	self.toolUpperArea = View.new(0,0,1100,50)
 	self.toolUpperArea.backgroundColor = {255,0,0}
 	self.view:addSubView(self.toolUpperArea)
 
-	self.toolRightArea = (require 'src/ObjectCollection').new(4,2,640,0,self.view.width-640,self.view.height)
+	self.toolRightArea = (require 'src/ObjectCollection').new(4,2,1100,0,self.view.width-1100,self.view.height)
 	self.toolRightArea.backgroundColor = {0,255,0}
 	self.view:addSubView(self.toolRightArea)
 
@@ -29,11 +30,17 @@ function MainScreen.new()
 	local dao = require 'src/DAO'
 	local imgs = dao.getData()
 	self.toolRightArea:prepareButtons(imgs,selectImage)
+
+	local b = ui.Button.new(1100-50,0,50,50)
+	b.image = love.graphics.newImage('save-icon.png')
+	b:addTarget(function(b) dao.saveLevel(self.levelCanvas:exportLevelData()) end)
+	self.toolUpperArea:addSubView(b)
+
 	return self
 end
 
 function selectImage(button)
-	inst.levelCanvas:selectTile(button.image)
+	inst.levelCanvas:selectTile(button.id,button.image)
 end
 
 function MainScreen:mousepressed(x,y,b)
