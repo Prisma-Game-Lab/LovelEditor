@@ -12,6 +12,8 @@ local searchView
 function Screen.new()
 	local self = Screen.newObject()
 	self.view = View.new(0,0,love.graphics.getDimensions())
+	self.view.screen = self
+	self.responder = nil
 	return self
 end
 
@@ -39,8 +41,19 @@ function Screen:mousereleased(x,y,b)
 	if self.view.interactionEnabled then self.view:mousereleased(x,y,b) end
 end
 
+function Screen:becomeResponder(view)
+	if self._responder~=nil then self._responder:endResponder() end
+	self._responder = view
+	self._responder:becameResponder()
+end
+
 function Screen:keypressed(key)
-	if self.view.interactionEnabled then self.view:keypressed(key) end
+	if self.view.interactionEnabled then
+		self.view:keypressed(key)
+		if self._responder ~= nil then
+			self._responder:respondKey(key)
+		end
+	end
 end
 
 function Screen:viewContainsPoint(view, x,y)

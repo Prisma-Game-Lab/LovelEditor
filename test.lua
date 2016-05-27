@@ -17,10 +17,10 @@ local table = {
 						height = 64,
 						width = 64
 					},
-					name = 'grass_96x96',
+					name = 'platGrass',
 					position = {
-						y = 64,
-						x = 512
+						y = 128,
+						x = 320
 					}
 				},
 				{
@@ -28,10 +28,10 @@ local table = {
 						height = 64,
 						width = 64
 					},
-					name = 'grass_96x96',
+					name = 'platGrass',
 					position = {
-						y = 64,
-						x = 576
+						y = 128,
+						x = 384
 					}
 				},
 				{
@@ -39,10 +39,10 @@ local table = {
 						height = 64,
 						width = 64
 					},
-					name = 'grass_96x96',
+					name = 'platGrass',
 					position = {
-						y = 64,
-						x = 640
+						y = 128,
+						x = 448
 					}
 				},
 				{
@@ -50,40 +50,7 @@ local table = {
 						height = 64,
 						width = 64
 					},
-					name = 'grass_96x96',
-					position = {
-						y = 64,
-						x = 704
-					}
-				},
-				{
-					size = {
-						height = 64,
-						width = 64
-					},
-					name = 'grass_96x96',
-					position = {
-						y = 64,
-						x = 768
-					}
-				},
-				{
-					size = {
-						height = 64,
-						width = 64
-					},
-					name = 'grass_96x96',
-					position = {
-						y = 64,
-						x = 832
-					}
-				},
-				{
-					size = {
-						height = 64,
-						width = 64
-					},
-					name = 'grass_96x96',
+					name = 'platGrass',
 					position = {
 						y = 128,
 						x = 512
@@ -94,7 +61,7 @@ local table = {
 						height = 64,
 						width = 64
 					},
-					name = 'grass_96x96',
+					name = 'platGrass',
 					position = {
 						y = 128,
 						x = 576
@@ -105,7 +72,7 @@ local table = {
 						height = 64,
 						width = 64
 					},
-					name = 'grass_96x96',
+					name = 'platGrass',
 					position = {
 						y = 128,
 						x = 640
@@ -116,7 +83,7 @@ local table = {
 						height = 64,
 						width = 64
 					},
-					name = 'grass_96x96',
+					name = 'platGrass',
 					position = {
 						y = 128,
 						x = 704
@@ -127,7 +94,7 @@ local table = {
 						height = 64,
 						width = 64
 					},
-					name = 'grass_96x96',
+					name = 'platGrass',
 					position = {
 						y = 128,
 						x = 768
@@ -138,75 +105,9 @@ local table = {
 						height = 64,
 						width = 64
 					},
-					name = 'grass_96x96',
+					name = 'platGrass',
 					position = {
 						y = 128,
-						x = 832
-					}
-				},
-				{
-					size = {
-						height = 64,
-						width = 64
-					},
-					name = 'grass_96x96',
-					position = {
-						y = 192,
-						x = 512
-					}
-				},
-				{
-					size = {
-						height = 64,
-						width = 64
-					},
-					name = 'grass_96x96',
-					position = {
-						y = 192,
-						x = 576
-					}
-				},
-				{
-					size = {
-						height = 64,
-						width = 64
-					},
-					name = 'grass_96x96',
-					position = {
-						y = 192,
-						x = 640
-					}
-				},
-				{
-					size = {
-						height = 64,
-						width = 64
-					},
-					name = 'grass_96x96',
-					position = {
-						y = 192,
-						x = 704
-					}
-				},
-				{
-					size = {
-						height = 64,
-						width = 64
-					},
-					name = 'grass_96x96',
-					position = {
-						y = 192,
-						x = 768
-					}
-				},
-				{
-					size = {
-						height = 64,
-						width = 64
-					},
-					name = 'grass_96x96',
-					position = {
-						y = 192,
 						x = 832
 					}
 				},
@@ -283,6 +184,17 @@ local table = {
 					},
 					name = 'grass_96x96',
 					position = {
+						y = 256,
+						x = 896
+					}
+				},
+				{
+					size = {
+						height = 64,
+						width = 64
+					},
+					name = 'grass_96x96',
+					position = {
 						y = 320,
 						x = 512
 					}
@@ -349,6 +261,17 @@ local table = {
 					},
 					name = 'grass_96x96',
 					position = {
+						y = 320,
+						x = 896
+					}
+				},
+				{
+					size = {
+						height = 64,
+						width = 64
+					},
+					name = 'grass_96x96',
+					position = {
 						y = 384,
 						x = 512
 					}
@@ -406,6 +329,17 @@ local table = {
 					position = {
 						y = 384,
 						x = 832
+					}
+				},
+				{
+					size = {
+						height = 64,
+						width = 64
+					},
+					name = 'grass_96x96',
+					position = {
+						y = 384,
+						x = 896
 					}
 				}
 			}

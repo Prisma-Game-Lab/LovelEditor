@@ -15,16 +15,16 @@ function MainScreen.new()
 	--self.levelCanvas.delegate = self
 
 	self.toolUpperArea = View.new(0,0,1100,50)
-	self.toolUpperArea.backgroundColor = {255,0,0}
+	--self.toolUpperArea.backgroundColor = {255,0,0}
 	self.view:addSubView(self.toolUpperArea)
 
 	self.toolRightArea = (require 'src/ObjectCollection').new(4,2,1100,0,self.view.width-1100,self.view.height)
-	self.toolRightArea.backgroundColor = {0,255,0}
+	--self.toolRightArea.backgroundColor = {0,255,0}
 	self.view:addSubView(self.toolRightArea)
 
 	local py = self.levelCanvas.y+self.levelCanvas.height
 	self.toolBottomArea = View.new(0,py,self.toolRightArea.x,self.view.height-py)
-	self.toolBottomArea.backgroundColor = {0,0,255}
+	--self.toolBottomArea.backgroundColor = {0,0,255}
 	self.view:addSubView(self.toolBottomArea)
 
 	local dao = require 'src/DAO'

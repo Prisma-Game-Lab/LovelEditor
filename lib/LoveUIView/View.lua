@@ -1,6 +1,6 @@
 local View = require ((...):match("(.-)[^%.]+$").."class").new("View")
 
-local subViewWithPoint
+local subViewWithPoint, linkToScreen, unlinkToScreen
 
 ------------------------------------------
 -- Public functions
@@ -104,6 +104,7 @@ end
 
 function View:addSubView(view)
   table.insert(self.subViews,view)
+  linkToScreen(view,self.screen)
   view.parent = self
 end
 
@@ -125,6 +126,7 @@ function View:removeFromSuperView()
     self.parent = nil
     for i,v in pairs(p.subViews) do
       if v==self then table.remove(p.subViews,i) break end end
+    unlinkToScreen(self)
   end
 end
 
@@ -174,6 +176,15 @@ subViewWithPoint = function(self,x,y)
     else v:clearMouse() end
   end
   return resp
+end
+
+linkToScreen = function(self,screen)
+  self.screen = screen
+  for _,v in pairs(self.subViews) do linkToScreen(v,screen) end
+end
+
+unlinkToScreen = function(self)
+  linkToScreen(self,nil)
 end
 
 return View
