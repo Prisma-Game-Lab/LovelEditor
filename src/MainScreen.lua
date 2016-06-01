@@ -6,6 +6,7 @@ local MainScreen = ui.extends(Screen,'MainScreen')
 
 local selectImage
 local inst
+local highlight
 
 function MainScreen.new()
 	local self = MainScreen.newObject()
@@ -35,6 +36,29 @@ function MainScreen.new()
 	b.image = love.graphics.newImage('save-icon.png')
 	b:addTarget(function(b) dao.saveLevel(self.levelCanvas:exportLevelData()) end)
 	self.toolUpperArea:addSubView(b)
+
+	local bImg = love.graphics.newImage('tick.png')
+	local tl1 = ui.TextLabel.new(0,0,60,25)
+	tl1.textAlignment = 'center'
+	tl1.text = 'Lines:'
+	self.toolUpperArea:addSubView(tl1)
+	local tf1 = ui.TextField.new(60,0,50,25)
+	tf1.textAlignment = 'center'
+	self.toolUpperArea:addSubView(tf1)
+	local bt1 = ui.Button.new(110,0,25,25)
+	bt1.image = bImg
+	self.toolUpperArea:addSubView(bt1)
+
+	local tl2 = ui.TextLabel.new(0,25,60,25)
+	tl2.textAlignment = 'center'
+	tl2.text = 'Columns: asasas'
+	self.toolUpperArea:addSubView(tl2)
+	local tf2 = ui.TextField.new(60,25,50,25)
+	tf2.textAlignment = 'center'
+	self.toolUpperArea:addSubView(tf2)
+	local bt2 = ui.Button.new(110,25,25,25)
+	bt2.image = bImg
+	self.toolUpperArea:addSubView(bt2)
 
 	return self
 end

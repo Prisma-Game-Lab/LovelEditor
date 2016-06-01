@@ -5,8 +5,11 @@ local ImgView = require 'src/TileImageView'
 local drawGrid,updateSelection,unselect,endSelection
 local showGrid, hideGrid, scrollGrid
 local checkCornerScroll
+local startStrongSelection, tryDelete
 
 local LevelCanvas = ui.extends(View,'LevelCanvas')
+
+local strongSelection = false
 
 local img = nil
 local id = nil
@@ -79,12 +82,15 @@ end
 
 function LevelCanvas:clearMouse()
 	self.super:clearMouse()
-	if self.selection then endSelection(self) end
+	if self.selection and not strongSelection then endSelection(self) end
 end
 
 function LevelCanvas:mousepressed(x,y,b)
 	self.super:mousepressed(x,y,b)
 	x,y = self.contentView:convertPoint(x,y)
+	if strongSelection then
+		unselect(self)
+	end
 	local box = View.new(x,y,0,0)
 	box.backgroundColor = {135,206,250,60}
 	box.borderColor = {0,0,255}
@@ -99,7 +105,7 @@ function LevelCanvas:mousemoved(x,y,dx,dy)
 	self.lastY = y
 	x,y = self.contentView:convertPoint(x,y)
 
-	if self.selection then
+	if self.selection and not strongSelection then
 		local box = self.selection.box
 		local ori = self.selection.ori
 		if x>ori.x then
@@ -128,8 +134,10 @@ function LevelCanvas:mousereleased(x,y,b)
 				v.image = img
 				v.id = id
 			end
+			endSelection(self)
+		else
+			startStrongSelection(self)
 		end
-		endSelection(self)
 	end
 end
 
@@ -202,6 +210,27 @@ function LevelCanvas:exportLevelData()
 	return t
 end
 
+function LevelCanvas:exportTileLevelData()
+	local t = {
+		cellSize = self.cell_size,
+		worldSize = {
+			width = self.contentView.width,
+			height = self.contentView.height
+		},
+		cellsQuant = {
+			n_lines = 3,
+			n_cols = 4
+		},
+		grid = {}
+	}
+	for i,v in pairs(self.grid) do
+		local line = {}
+		for j,w in pairs(v) do line[j] = w.image and w.id or '' end
+		grid[i] = line
+	end
+	return t
+end
+
 function LevelCanvas:keypressed(key)
 	if key=='escape' then
 		if self.selection then
@@ -211,6 +240,8 @@ function LevelCanvas:keypressed(key)
 		end
 	elseif key=='g' then
 		self:toggleGrid()
+	elseif key=='delete' or key=='backspace' then
+		tryDelete(self)
 	--[[TO DO
 	elseif key=='right' then
 		scrollGrid(self,self.cell_size/2,0)
@@ -270,6 +301,28 @@ function unselect(self)
 		view.overlayImg = nil
 		if self.gridOn then view.borderColor = color.gridOn
 		else view.borderColor = color.gridOff end
+	end
+	if strongSelection then strongSelection = false self.selection = nil end
+end
+
+function startStrongSelection(self)
+	local sel = {}
+	for _,v in pairs(self.selection.selected) do if v.image then table.insert(sel,v) end end
+	endSelection(self)
+	if #sel>0 then
+		for _,v in pairs(sel) do
+			v.borderColor = {0,0,255}
+			v:bringToFront()
+		end
+		strongSelection = true
+		self.selection = {selected=sel}
+	end
+end
+
+function tryDelete(self)
+	if strongSelection then
+		for _,v in pairs(self.selection.selected) do v.image = nil end
+		unselect(self)
 	end
 end
 

@@ -29,7 +29,8 @@ function DAO.getData()
 end
 
 function DAO.saveLevel(level)
-	(require 'lib/tableIO').save(level,'test.lua',fuckThis)
+	--(require 'lib/tableIO').save(level,'test.lua',fuckThis)
+  (require 'lib/tableIO').loveSave(level,'firstLevel.lua',fuckThis)
   
 end
 

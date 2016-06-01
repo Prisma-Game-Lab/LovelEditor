@@ -13,7 +13,7 @@ local blinkTime = 0.5
 
 function TextField.new(x,y,width,height)
 	local self = TextField.newObject(x,y,width,height)
-	self.text = "Cmon"
+	self.text = ''
 	self.textColor = {0,0,0}
 	self.textAlignment = 'left'
 	self.isSelected = false
@@ -21,31 +21,11 @@ function TextField.new(x,y,width,height)
 	return self
 end
 
---[[
-function TextField:mousepressed(x,y,b)
-	self.super:mousepressed(x,y,b)
-	self.isSelected = true
-end
-]]
-
-function TextField:mousemoved(x,y,dx,dy)
-	self.isSelected = true
-end
-
-function TextField:clearMouse()
-	self.super:clearMouse()
-	--[[
-	if love.mouse.isDown(1) then
-		self.isSelected = false
-	end]]
-	self.isSelected = false
-end
-
 function TextField:keypressed(key)
 	self:becomeResponder()
 end
 
-function TextField:respondKey()
+function TextField:respondKey(key)
 	if keys[key] then
 		self.text = self.text .. keys[key]
 	elseif key=='return' then
@@ -72,10 +52,25 @@ end
 
 function TextField:becameResponder()
 	self.isSelected = true
+	self.blinkOn = true
+	self.blinkTimer = blinkTime
+	if self.highlightEnabled then
+	end
 end
 
 function TextField:endResponder()
 	self.isSelected = false
+end
+
+function TextField:update(dt)
+	self.super:update(dt)
+	if self.isSelected then
+		self.blinkTimer = self.blinkTimer-dt
+		if self.blinkTimer<0 then
+			self.blinkOn = not self.blinkOn
+			self.blinkTimer = blinkTime
+		end
+	end
 end
 
 function TextField:draw()
@@ -88,7 +83,7 @@ function TextField:during_draw()
 	self.super:during_draw()
 	love.graphics.setColor(self.textColor)
 	local t = self.text
-	if self.isSelected and self.blinkOn then t=self.text .. "|" end
+	if self.isSelected and self.blinkOn then t=self.text .. '|' end
 	love.graphics.printf(t,0,0,self.width,self.textAlignment)
 end
 

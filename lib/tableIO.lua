@@ -18,6 +18,7 @@ end
 
 local prints = {
 	number = write,
+	boolean = function(bool,file) write(tostring(bool),file) end,
 	string = function(string,file) write("'"..string .."'",file) end,
 	table = function(t,file,offset)
 		writeTable(t,file,offset..'\t')
@@ -30,13 +31,13 @@ function writeTable(t,file,offset)
 	local off = offset..'\t'
 	local first = true
 	for i,v in pairs(t) do
-		--print(i,v)
+		print(i,v)
 		local f = prints[type(v)]
 		if f then
 			if first then first = false
 			else file:write(',') end
 			file:write('\n')
-			if type(i)~='number' then
+			if type(i)~='number' or i==0 then
 				file:write(off..i..' = ')
 			else
 				file:write(off)
@@ -72,6 +73,23 @@ function tableIO.save(t,path,name)
 	writeTable(t,file)
 	file:write('\n\nreturn '..name)
 	io.close(file)
+	return true
+end
+
+function tableIO.loveSave(t,path,name)
+   if type(t)~='table' then
+		return false,'The input must be a table'
+	end
+	local file = love.filesystem.newFile(path)
+   	file:open('w')
+	if file==nil then
+		return false,'The file could not be opened'
+	end
+	name = name or 'table'
+	file:write('local '..name..' = ')
+	writeTable(t,file)
+	file:write('\n\nreturn '..name)
+	file:close()
 	return true
 end
 
