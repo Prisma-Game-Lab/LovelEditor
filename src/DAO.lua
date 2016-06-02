@@ -1,4 +1,5 @@
 local DAO = {}
+local DEBUG = false
 
 local function loadImages(dir)
 	local imgs = {}
@@ -30,8 +31,10 @@ end
 
 function DAO.saveLevel(level)
 	--(require 'lib/tableIO').save(level,'test.lua',fuckThis)
-  (require 'lib/tableIO').loveSave(level,'firstLevel.lua',fuckThis)
-  
+  local t = require 'lib/tableIO'
+  local p
+  if DEBUG then p = 'test.lua' else p = require('src.saveUtils').getFolderPath()..'test.lua' end
+  t.save(level,p)--t.loveSave(level,'firstLevel.lua',fuckThis)
 end
 
 return DAO

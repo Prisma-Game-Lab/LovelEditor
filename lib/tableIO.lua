@@ -48,6 +48,13 @@ function writeTable(t,file,offset)
 	file:write('\n'..offset..'}')
 end
 
+function tableIO.saveOnFile(file,t,path,name)
+	name = name or 'table'
+	file:write('local '..name..' = ')
+	writeTable(t,file)
+	file:write('\n\nreturn '..name)
+end
+
 --[[ tableIO.save
 Save a table to a path, using io
 -
@@ -68,10 +75,7 @@ function tableIO.save(t,path,name)
 	if file==nil then
 		return false,'The file could not be opened'
 	end
-	name = name or 'table'
-	file:write('local '..name..' = ')
-	writeTable(t,file)
-	file:write('\n\nreturn '..name)
+	tableIO.saveOnFile(file,t,path,name)
 	io.close(file)
 	return true
 end

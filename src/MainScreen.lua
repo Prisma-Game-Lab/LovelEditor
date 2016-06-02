@@ -1,6 +1,7 @@
 local ui = require 'lib.LoveUIView'
 local Screen = ui.Screen
 local View = ui.View
+local MyTextField = require 'src.MyTextField'
 
 local MainScreen = ui.extends(Screen,'MainScreen')
 
@@ -37,46 +38,58 @@ function MainScreen.new()
 	b:addTarget(function(b) dao.saveLevel(self.levelCanvas:exportLevelData()) end)
 	self.toolUpperArea:addSubView(b)
 
+	local s = {w=0,y=50}
 	local bImg = love.graphics.newImage('tick.png')
-	local tl1 = ui.TextLabel.new(0,0,60,25)
+	local tl1 = ui.TextLabel.new(5,0,60,s.y/2)
 	tl1.textAlignment = 'center'
 	tl1.text = 'Lines:'
 	self.toolUpperArea:addSubView(tl1)
-	local tf1 = ui.TextField.new(60,0,50,25)
+	local tf1 = MyTextField.new(tl1:maxX(),tl1.y,50,tl1.height)
 	tf1.textAlignment = 'center'
 	self.toolUpperArea:addSubView(tf1)
-	local bt1 = ui.Button.new(110,0,25,25)
+	local bt1 = ui.Button.new(tf1:maxX(),tl1.y,tl1.height,tl1.height)
 	bt1.image = bImg
+	bt1:addTarget(function(...) tf1:confirmText() end)
 	self.toolUpperArea:addSubView(bt1)
 
-	local tl2 = ui.TextLabel.new(0,25,60,25)
+	local tl2 = ui.TextLabel.new(tl1.x,tl1:maxY(),tl1.width,tl1.height)
 	tl2.textAlignment = 'center'
-	tl2.text = 'Columns: asasas'
+	tl2.text = 'Columns:'
 	self.toolUpperArea:addSubView(tl2)
-	local tf2 = ui.TextField.new(60,25,50,25)
+	local tf2 = MyTextField.new(tl2:maxX(),tl2.y,tf1.width,tl2.y)
 	tf2.textAlignment = 'center'
 	self.toolUpperArea:addSubView(tf2)
-	local bt2 = ui.Button.new(110,25,25,25)
+	local bt2 = ui.Button.new(tf2:maxX(),tl2.y,tl2.height,tl2.height)
 	bt2.image = bImg
 	self.toolUpperArea:addSubView(bt2)
+
+	local tl3 = ui.TextLabel.new(bt1:maxX()+10,tl1.y,70,tl1.height)
+	tl3.textAlignment = 'center'
+	tl3.text = 'CellWidth:'
+	self.toolUpperArea:addSubView(tl3)
+	local tf3 = MyTextField.new(tl3:maxX(),tl3.y,50,tl3.height)
+	tf3.textAlignment = 'center'
+	self.toolUpperArea:addSubView(tf3)
+	local bt3 = ui.Button.new(tf3:maxX(),tl3.y,tl3.height,tl3.height)
+	bt3.image = bImg
+	self.toolUpperArea:addSubView(bt3)
+
+	local tl4 = ui.TextLabel.new(tl3.x,tl3:maxY(),tl3.width,tl3.height)
+	tl4.textAlignment = 'center'
+	tl4.text = 'CellHeight:'
+	self.toolUpperArea:addSubView(tl4)
+	local tf4 = MyTextField.new(tl4:maxX(),tl4.y,tf3.width,tl4.y)
+	tf4.textAlignment = 'center'
+	self.toolUpperArea:addSubView(tf4)
+	local bt4 = ui.Button.new(tf4:maxX(),tl4.y,tl4.height,tl4.height)
+	bt4.image = bImg
+	self.toolUpperArea:addSubView(bt4)
 
 	return self
 end
 
 function selectImage(button)
 	inst.levelCanvas:selectTile(button.id,button.image)
-end
-
-function MainScreen:mousepressed(x,y,b)
-	self.super:mousepressed(x,y,b)
-end
-
-function MainScreen:mousemoved(x,y,dx,dy)
-	self.super:mousemoved(x,y,dx,dy)
-end
-
-function MainScreen:mousereleased(...)
-	self.super:mousereleased(...)
 end
 
 function MainScreen:keypressed(key)
