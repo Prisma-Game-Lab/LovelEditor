@@ -4,6 +4,7 @@ local screen
 local str
 
 function love.load()
+	require('src.DAO').start()
 	screen = require ('src.MainScreen')
 	--love.keyboard.setKeyRepeat(true)
 	local img = love.graphics.newImage('bil1.png')
@@ -23,11 +24,11 @@ function love.draw()
 	love.graphics.setColor(0,0,0)
 	love.graphics.print(x..'\n'..y,x,y-28)
 	]]
-	
+	--[[
 	love.graphics.rectangle('fill',0,0,200,100)
 	love.graphics.setColor(0,255,0)
 	love.graphics.print(str)
-	
+	]]
 end
 
 function love.wheelmoved(x,y)

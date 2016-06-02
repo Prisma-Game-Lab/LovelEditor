@@ -14,18 +14,17 @@ local function getParentPath(path,times)
 	return s:match("(.-)[^%/]+$")
 end
 
-local function windowsPath()
-
+local function windowsPath(path)
+	return getParentPath(path)
 end
 
-local function getUnixPath(path)
+local function unixPath(path)
 	return getParentPath(path,3)
 end
 
 function saveUtils.getFolderPath()
 	local s = love.filesystem.getSourceBaseDirectory()
-	print(s)
-	if is_windows() then return nil else return getUnixPath(s) end
+	if is_windows() then return windowsPath(s) else return unixPath(s) end
 end
 
 return saveUtils

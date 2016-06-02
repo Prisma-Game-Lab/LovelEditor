@@ -31,7 +31,6 @@ function writeTable(t,file,offset)
 	local off = offset..'\t'
 	local first = true
 	for i,v in pairs(t) do
-		print(i,v)
 		local f = prints[type(v)]
 		if f then
 			if first then first = false
@@ -80,6 +79,7 @@ function tableIO.save(t,path,name)
 	return true
 end
 
+--[[ NOT USED
 function tableIO.loveSave(t,path,name)
    if type(t)~='table' then
 		return false,'The input must be a table'
@@ -96,5 +96,6 @@ function tableIO.loveSave(t,path,name)
 	file:close()
 	return true
 end
+]]
 
 return tableIO
