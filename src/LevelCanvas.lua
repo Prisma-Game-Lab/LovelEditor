@@ -6,6 +6,7 @@ local drawGrid,updateSelection,unselect,endSelection
 local showGrid, hideGrid, scrollGrid
 local checkCornerScroll
 local startStrongSelection, tryDelete
+local updateContentView
 
 local LevelCanvas = ui.extends(View,'LevelCanvas')
 
@@ -23,21 +24,23 @@ local color = {
 
 function LevelCanvas.new(x,y,width,height)
 	local self = LevelCanvas.newObject(x,y,width,height)
+	self._x = x
+	self._y = y
 	self.maxWidth = width
 	self.maxHeight = height
 	self.gridOn = true
-	self.cell_size = 64
-	self.cell_line = math.floor(height/self.cell_size)+5
-	self.cell_col = math.floor(width/self.cell_size)+5
+	self.cell_size = {width=64, height=64}
+	self.cell_line = math.floor(height/self.cell_size.height)+5
+	self.cell_col = math.floor(width/self.cell_size.width)+5
 	self.backgroundColor = {128,128,128,128}
 	self.grid = {}
-	self.world_size = {width=self.cell_size*self.cell_col,height = self.cell_size*self.cell_line}
+	self.world_size = {width=self.cell_size.width*self.cell_col,height = self.cell_size.height*self.cell_line}
 	self.contentView = View.new(0,0,self.world_size.width,self.world_size.height)
 	for i=0,self.cell_line-1 do
 		local lin = {}
-		local y = i*self.cell_size
+		local y = i*self.cell_size.height
 		for j=0,self.cell_col-1 do
-			local vw = ImgView.new(j*self.cell_size,y,self.cell_size,self.cell_size)
+			local vw = ImgView.new(j*self.cell_size.width,y,self.cell_size.width,self.cell_size.height)
 			lin[j]=vw
 			vw.borderColor = {0,0,0,170}
 			self.contentView:addSubView(vw)
@@ -150,15 +153,16 @@ function checkCornerScroll(self,dt)
 	if self.mouse_over then
 		local dx = self.width-self.lastX
 		local dy = self.height-self.lastY
-		local dist = self.cell_size*dt*4
-		if self.width-self.lastX<self.cell_size/2 then
+		local dist = self.cell_size.width*dt*4
+		if self.width-self.lastX<self.cell_size.width/2 then
 			dx = dist
-		elseif self.lastX<self.cell_size/2 then
+		elseif self.lastX<self.cell_size.width/2 then
 			dx = -dist
 		else dx = 0 end
-		if self.height-self.lastY<self.cell_size/2 then
+		dist = self.cell_size.height*dt*4
+		if self.height-self.lastY<self.cell_size.height/2 then
 			dy = dist
-		elseif self.lastY<self.cell_size/2 then
+		elseif self.lastY<self.cell_size.height/2 then
 			dy = -dist
 		else dy = 0 end
 		if dx~=0 or dy~=0 then
@@ -255,9 +259,83 @@ function LevelCanvas:toggleGrid()
 	if self.gridOn then showGrid(self) else hideGrid(self) end
 end
 
+function LevelCanvas:changeCellWidth(width)
+	for _,v in pairs(self.grid) do for i,w in pairs(v) do
+			w.width = width
+			w.x = i*width
+	end end
+	self.cell_size.width = width
+	self.world_size.width = width*self.cell_col
+	updateContentView(self)
+end
+function LevelCanvas:changeCellHeight(height)
+	for i,v in pairs(self.grid) do for _,w in pairs(v) do
+			w.height = height
+			w.y = i*height
+	end end
+	self.cell_size.height = height
+	self.world_size.height = height*self.cell_line
+	updateContentView(self)
+end
+function LevelCanvas:changeLines(lin)
+	if lin<self.cell_line then
+		for i=self.cell_line-1,lin,-1 do
+			for j=self.cell_col-1,0,-1 do
+				local w = self.grid[i][j]
+				w:removeFromSuperView()
+				w=nil
+			end
+			table.remove(self.grid,i)
+		end
+	elseif lin>self.cell_line then
+		for i=self.cell_line,lin-1 do
+			local newL = {}
+			local y = i*self.cell_size.height
+			for j=0,self.cell_col-1 do
+				local w = ImgView.new(j*self.cell_size.width,y,self.cell_size.width,self.cell_size.height)
+				newL[j]=w
+				w.borderColor = {0,0,0,170}
+				self.contentView:addSubView(w)
+			end
+			self.grid[i]=newL
+		end
+	end
+	self.cell_line = lin
+	self.world_size.height = self.cell_size.height*lin
+	updateContentView(self)
+end
+function LevelCanvas:changeColums(col)
+	if col<self.cell_col then
+		for i=self.cell_col-1,col,-1 do
+			for j=self.cell_line-1,0,-1 do
+				local w = self.grid[j][i]
+				w:removeFromSuperView()
+				w=nil
+			end
+		end
+	elseif col>self.cell_col then
+		for i=self.cell_col,col-1 do
+			local x = i*self.cell_size.width
+			for j=0,self.cell_line-1 do
+				local w = ImgView.new(x,j*self.cell_size.height,self.cell_size.width,self.cell_size.height)
+				grid[j][i]=w
+				w.borderColor = {0,0,0,170}
+				self.contentView:addSubView(w)
+			end
+		end
+	end
+	self.cell_col = col
+	self.world_size.width = self.cell_size.width*col
+	updateContentView(self)
+end
+
 function scrollGrid(self,x,y)
+	self.contentView.x = math.min(math.max(self.contentView.x-x,self.width-self.world_size.width),0)
+	self.contentView.y = math.min(math.max(self.contentView.y-y,self.height-self.world_size.height),0)
+	--[[
 	self.contentView.x = math.max(math.min(self.contentView.x-x,0),self.width-self.world_size.width)
 	self.contentView.y = math.max(math.min(self.contentView.y-y,0),self.height-self.world_size.height)
+	]]
 end
 
 function hideGrid(self)
@@ -281,8 +359,8 @@ function updateSelection(self)
 	local sel = self.selection.selected
 	unselect(self)
 	local view
-	for i=math.floor(b.x/self.cell_size),math.floor((b.x+b.width)/self.cell_size) do
-		for j=math.floor(b.y/self.cell_size),math.floor((b.y+b.height)/self.cell_size) do
+	for i=math.floor(b.x/self.cell_size.width),math.floor((b.x+b.width)/self.cell_size.width) do
+		for j=math.floor(b.y/self.cell_size.height),math.floor((b.y+b.height)/self.cell_size.height) do
 			view = self.grid[j][i]
 			view.overlayImg = img
 			view.borderColor = {255,0,0}
@@ -330,6 +408,17 @@ function endSelection(self)
 	unselect(self)
 	self.selection.box:removeFromSuperView()
 	self.selection = nil
+end
+
+function updateContentView(self)
+	self.contentView.x = 0
+	self.contentView.y = 0
+	self.contentView.width = self.world_size.width
+	self.contentView.height = self.world_size.height
+	self.width = math.min(self.world_size.width,self.maxWidth)
+	self.height = math.min(self.world_size.height,self.maxHeight)
+	self.x = self._x+(self.maxWidth-self.width)/2
+	self.y = self._y+(self.maxHeight-self.height)/2
 end
 
 return LevelCanvas

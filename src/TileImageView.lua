@@ -6,7 +6,9 @@ local overlayAlpha = 128
 local drawImg
 
 function TileImageView.new(x,y,width,height)
-	return TileImageView.newObject(x,y,width,height)
+	local self = TileImageView.newObject(x,y,width,height)
+  self.shouldFill = true
+  return self
 end
 
 function TileImageView:draw()
@@ -27,8 +29,10 @@ function drawImg(self,img,alpha)
 		love.graphics.setColor(255,255,255,alpha)
     	local w,h = img:getDimensions()
     	local sx,sy = self.width/w,self.height/h
-    	local s = sx<sy and sx or sy
-    	love.graphics.draw(img,(self.width-s*w)/2,(self.height-s*h)/2,0,s,s)
+    	if not self.shouldFill then
+        if sx>sy then sx = sy else sy = sx end
+      end
+    	love.graphics.draw(img,(self.width-sx*w)/2,(self.height-sy*h)/2,0,sx,sy)
     end
  end
 

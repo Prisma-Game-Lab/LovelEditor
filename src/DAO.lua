@@ -88,13 +88,13 @@ function DAO.start()
   end
 end
 
-function DAO.saveLevel(level)
+function DAO.saveLevel(level,name)
   local t = require 'lib/tableIO'
   local p
   if not DEBUG then
-    p = getDir()..'test.lua'
+    p = getDir()..name ..'.lua'
     DAO.log('trying to save level data at: "'..p ..'"...')
-  else p = 'test.lua' end
+  else p = name ..'.lua' end
   local suc,err = t.save(level,p)
   if not DEBUG then
     if suc then

@@ -15,7 +15,7 @@ function MyTextField:endResponder()
 end
 
 function MyTextField:confirmText()
-	self.text = self._save
+	self.text = math.floor(tonumber(self._save))
 end
 
 function MyTextField:mousepressed(...)
