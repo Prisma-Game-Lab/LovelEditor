@@ -1,5 +1,5 @@
 local DAO = {}
-local DEBUG = true
+local DEBUG = false
 
 local function dirLookup(dir)
    local p = io.popen('find "'..dir..'" -type f')  --Open directory look for files, save data in p. By giving '-type f' as parameter, it returns all files.     
@@ -41,12 +41,6 @@ end
 
 local function loadImages(dir)
 	local imgs = {}
-  --[[
-  local file = assert(io.open("/path/to/pig.png", "r"))
-  local filedata = love.file.newFileData(file:read("*a"), "pig.png")
-  file:close()
-  image = love.graphics.newImage(filedata)
-  ]]
   local file
   DAO.log('searching tiles at "'..dir ..'"')
   local files = dirLookup(dir)
