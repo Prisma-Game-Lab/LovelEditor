@@ -318,7 +318,7 @@ function LevelCanvas:changeColums(col)
 			local x = i*self.cell_size.width
 			for j=0,self.cell_line-1 do
 				local w = ImgView.new(x,j*self.cell_size.height,self.cell_size.width,self.cell_size.height)
-				grid[j][i]=w
+				self.grid[j][i]=w
 				w.borderColor = {0,0,0,170}
 				self.contentView:addSubView(w)
 			end

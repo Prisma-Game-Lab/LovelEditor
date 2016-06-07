@@ -15,16 +15,41 @@ local function getParentPath(path,times)
 end
 
 local function windowsPath(path)
-	return getParentPath(path)
+	return path .. "\\"
+	--getParentPath(path)
 end
 
 local function unixPath(path)
 	return getParentPath(path,3)
 end
 
-function saveUtils.getFolderPath()
+local function windowsLookup(dir)
+	local p = io.popen('dir "'..dir..'" /b')  --Open directory look for files, save data in p. By giving '-type f' as parameter, it returns all files.     
+   	local files = {}
+   	for file in p:lines() do                         --Loop through all files
+       table.insert(files,dir ..'\\'..file)      
+   	end
+   	return files
+end
+
+local function unixLookup(dir)
+	local p = io.popen('find "'..dir..'" -type f')  --Open directory look for files, save data in p. By giving '-type f' as parameter, it returns all files.     
+   	local files = {}
+   	for file in p:lines() do                         --Loop through all files
+       table.insert(files,file)      
+   	end
+   	return files
+end
+
+function saveUtils.getFolderPath(logger)
 	local s = love.filesystem.getSourceBaseDirectory()
-	if is_windows() then return windowsPath(s) else return unixPath(s) end
+	if logger then logger('Source base directory: '..s) end
+	if is_windows() then
+		if logger then logger('windows system detected') end
+		return windowsPath(s),windowsLookup
+	else
+		if logger then logger('unix system detected') end
+		return unixPath(s),unixLookup end
 end
 
 return saveUtils

@@ -1,17 +1,19 @@
 local DAO = {}
-local DEBUG = false
+local DEBUG = true
 
-local function dirLookup(dir)
-   local p = io.popen('find "'..dir..'" -type f')  --Open directory look for files, save data in p. By giving '-type f' as parameter, it returns all files.     
+--[[
+local function dirLookup(dir,look)
+   local p = io.popen(look(dir))  --Open directory look for files, save data in p. By giving '-type f' as parameter, it returns all files.     
    local files = {}
    for file in p:lines() do                         --Loop through all files
        table.insert(files,file)      
    end
    return files
 end
+]]
 
-local function getDir()
-  return require('src.saveUtils').getFolderPath()
+local function getDir(...)
+  return require('src.saveUtils').getFolderPath(...)
 end
 
 local function debugLoadImages(dir)
@@ -39,18 +41,21 @@ local function debugLoadImages(dir)
 end
 
 
-local function loadImages(dir)
+local function loadImages(dir,look)
 	local imgs = {}
   local file
   DAO.log('searching tiles at "'..dir ..'"')
-  local files = dirLookup(dir)
+  local files = look(dir)--dirLookup(dir,look)
+  for i,v in pairs(files) do
+    DAO.log('file: '..v)
+  end
   for i,v in pairs(files) do
     if string.sub(v,#v-3) == ".png" then
       --print(v)
     	local id = string.sub(v,1,#v-4):match('[^/]+$')
       --print(id)
       file = io.open(v)
-    	imgs[id] = love.graphics.newImage(love.filesystem.newFileData(file:read('*a'),'tile.png'))
+    	imgs[id] = love.graphics.newImage(love.filesystem.newFileData(file:read('*all'),'tile.png'))
       file:close()
     end
   end
@@ -61,7 +66,9 @@ end
 
 function DAO.getData()
   if DEBUG then return debugLoadImages('TilesDemo')--loadImages('/Users/Piupas/Desktop/LOVE/LovelEditor/TilesDemo')
-  else return loadImages(require('src.saveUtils').getFolderPath()..'Tiles')
+  else
+    local path,look = getDir(DAO.log)
+    return loadImages(path ..'Tiles',look)
   end
 end
 
@@ -97,6 +104,10 @@ function DAO.saveLevel(level,name)
       DAO.log('error saving: tableIO: '..err)
     end
   end
+end
+
+function DAO.loadLevel(name)
+  --beta, not ready for here yet
 end
 
 return DAO
