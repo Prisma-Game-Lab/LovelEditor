@@ -30,7 +30,8 @@ function MainScreen.new()
 	self.view:addSubView(self.toolBottomArea)
 
 	local dao = require 'src/DAO'
-	local imgs = dao.getData()
+	local imgs
+	imgs,self.dir = dao.getData()
 	self.toolRightArea:prepareButtons(imgs,selectImage)
 
 	local b = ui.Button.new(1100-50,0,50,50)
@@ -113,6 +114,12 @@ function MainScreen:keypressed(key)
 		self.toolRightArea:cancelSelection()
 	end
 	self.super:keypressed(key)
+end
+
+function MainScreen:draw()
+	self.super:draw()
+	love.graphics.setColor(0,0,0)
+	love.graphics.printf(self.dir,4,0,380)
 end
 
 inst = MainScreen.new()

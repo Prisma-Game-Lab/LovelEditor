@@ -1,7 +1,7 @@
 local saveUtils = {}
 
 
-local function is_windows()
+function saveUtils.is_windows()
 	return package.config:sub(1,1)=='\\'
 end
 
@@ -44,7 +44,7 @@ end
 function saveUtils.getFolderPath(logger)
 	local s = love.filesystem.getSourceBaseDirectory()
 	if logger then logger('Source base directory: '..s) end
-	if is_windows() then
+	if saveUtils.is_windows() then
 		if logger then logger('windows system detected') end
 		return windowsPath(s),windowsLookup
 	else
