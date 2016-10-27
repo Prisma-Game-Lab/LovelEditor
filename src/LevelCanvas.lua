@@ -67,7 +67,7 @@ function LevelCanvas:draw()
 end
 
 function LevelCanvas:during_draw()
-	self.super:during_draw()
+	self:super_during_draw()
 	if self.mouse_over then
 		local x,y = self.contentView:convertPoint(self.lastX,self.lastY)
 		love.graphics.setColor(0,0,0)
@@ -84,12 +84,12 @@ function LevelCanvas:during_draw()
 end
 
 function LevelCanvas:clearMouse()
-	self.super:clearMouse()
+	self:super_clearMouse()
 	if self.selection and not strongSelection then endSelection(self) end
 end
 
 function LevelCanvas:mousepressed(x,y,b)
-	self.super:mousepressed(x,y,b)
+	self:super_mousepressed(x,y,b)
 	x,y = self.contentView:convertPoint(x,y)
 	if strongSelection then
 		unselect(self)
@@ -103,7 +103,7 @@ function LevelCanvas:mousepressed(x,y,b)
 end
 
 function LevelCanvas:mousemoved(x,y,dx,dy)
-	self.super:mousemoved(x,y,dx,dy)
+	self:super_mousemoved(x,y,dx,dy)
 	self.lastX = x
 	self.lastY = y
 	x,y = self.contentView:convertPoint(x,y)
@@ -128,7 +128,7 @@ function LevelCanvas:mousemoved(x,y,dx,dy)
 end
 
 function LevelCanvas:mousereleased(x,y,b)
-	self.super:mousereleased(x,y,b)
+	self:super_mousereleased(x,y,b)
 	x,y = self.contentView:convertPoint(x,y)
 	if self.selection then
 		--do something
@@ -145,7 +145,7 @@ function LevelCanvas:mousereleased(x,y,b)
 end
 
 function LevelCanvas:update(dt)
-	self.super:update(dt)
+	self:super_update(dt)
 	checkCornerScroll(self,dt)
 end
 
@@ -180,7 +180,7 @@ function checkCornerScroll(self,dt)
 end
 
 function LevelCanvas:wheelmoved(x,y)
-	self.super:wheelmoved(x,y)
+	self:super_wheelmoved(x,y)
 	scrollGrid(self,5*x,-5*y)
 end
 
@@ -212,6 +212,15 @@ function LevelCanvas:exportLevelData()
 		})
 	end end end
 	return t
+end
+
+function LevelCanvas:exportLevelDataTxt()
+	local str = self.cell_line .. ' ' .. self.cell_col .. ' ' .. self.contentView.width .. ' ' .. self.contentView.height .. '\n'
+	for i=0,self.cell_line-1 do
+		for j=0, self.cell_col-1 do
+			
+		end
+	end
 end
 
 function LevelCanvas:exportTileLevelData()

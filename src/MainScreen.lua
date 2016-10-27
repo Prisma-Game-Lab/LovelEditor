@@ -113,11 +113,11 @@ function MainScreen:keypressed(key)
 	if not self.levelCanvas.selection and self.toolRightArea.selected then
 		self.toolRightArea:cancelSelection()
 	end
-	self.super:keypressed(key)
+	self:super_keypressed(key)
 end
 
 function MainScreen:draw()
-	self.super:draw()
+	self:super_draw()
 	love.graphics.setColor(0,0,0)
 	love.graphics.printf(self.dir,4,0,380)
 end

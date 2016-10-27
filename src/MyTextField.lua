@@ -9,7 +9,7 @@ function MyTextField.new(x,y,width,height)
 end
 
 function MyTextField:endResponder()
-	self.super:endResponder()
+	self:super_endResponder()
 	self._save = self.text
 	self.text = self._text
 end

@@ -26,7 +26,7 @@ local function debugLoadImages(dir)
 end
 
 local function isWindows()
-  if isWindows == nil then isW = require('src.saveUtils').is_windows() end
+  if isW == nil then isW = require('src.saveUtils').is_windows() end
   return isW
 end
 
@@ -52,7 +52,6 @@ local function loadImages(dir,look)
   DAO.log('sucessfully opened '..#files ..' files')
   return imgs,dir
 end
-
 
 function DAO.getData()
   if DEBUG then return debugLoadImages('TilesDemo')--loadImages('/Users/Piupas/Desktop/LOVE/LovelEditor/TilesDemo')

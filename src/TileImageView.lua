@@ -18,7 +18,8 @@ function TileImageView:draw()
 end
 
 function TileImageView:during_draw()
-  self.super:during_draw()
+  --print('drawing')
+  self:super_during_draw()
   drawImg(self,'image',255)
   drawImg(self,'overlayImg',overlayAlpha)
 end

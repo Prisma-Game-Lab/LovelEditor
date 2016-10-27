@@ -81,8 +81,8 @@ function ObjectCollection:target(button)
 end
 
 function ObjectCollection:mousemoved(x,y,dx,dy)
-  --self.super:mousemoved(x-self.x,y-self.y,dx,dy)
-  self.super:mousemoved(x,y,dx,dy)
+  --self:super_mousemoved(x-self.x,y-self.y,dx,dy)
+  self:super_mousemoved(x,y,dx,dy)
   --if self:containsPoint(x,y) then
     if love.mouse.isDown(1) then
       self:scroll(1.5*dy)
